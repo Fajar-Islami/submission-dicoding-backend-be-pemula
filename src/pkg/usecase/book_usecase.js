@@ -9,7 +9,7 @@ class BookUcS {
   static insertBook(data) {
     const { name, pageCount, readPage } = data;
 
-    if (name === '') {
+    if (!name) {
       const resp = defaultResponse({
         status: C.statusFail,
         message: 'Gagal menambahkan buku. Mohon isi nama buku',

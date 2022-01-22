@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 const { nanoid } = require('nanoid');
 
 const Constant = require('../../handler/constant');
@@ -55,17 +56,37 @@ class BookRepository {
   }
 
   static getAllBooks(query) {
-    console.log(query);
-    const booksData = books.map((x) => ({
-      id: x.id,
-      name: x.name,
-      publisher: x.publisher,
-    }));
+    const { name, reading, finished } = query;
+    let filteredBook = [...books];
+
+    if (name !== undefined && name.trim().length > 0) {
+      filteredBook = filteredBook.filter((book) =>
+        book.name.toLowerCase().includes(name.toLowerCase())
+      );
+    }
+
+    const numReading = Number.parseInt(reading, 10);
+    if (!Number.isNaN(numReading)) {
+      filteredBook = filteredBook.filter(
+        (book) => book.reading === !!numReading
+      );
+    }
+
+    const numFinished = Number.parseInt(finished, 10);
+    if (!Number.isNaN(numFinished)) {
+      filteredBook = filteredBook.filter(
+        (book) => book.finished === !!numFinished
+      );
+    }
 
     const resp = defaultResponse({
       status: C.statusSuccess,
       data: {
-        books: booksData,
+        books: filteredBook.map((book) => ({
+          id: book.id,
+          name: book.name,
+          publisher: book.publisher,
+        })),
       },
     });
 
